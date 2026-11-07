@@ -1,0 +1,8 @@
+{
+  "source": "https://openapi.flowda.ai/v1/openapi.json",
+  "fetched_at": "2026-11-07T08:37:46+00:00",
+  "sha256": "5e6072db6c10c67183b6f4164096c8d65cd152a17167693da046c3fbb8e2d6c1",
+  "openapi": "3.0.3",
+  "api_version": "1.1.0",
+  "operations": 20
+}

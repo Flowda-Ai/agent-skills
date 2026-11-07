@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "flowda",
+  "description": "Agent Skills and the hosted flowda MCP server for fetching pages, searching the web, mapping sites, running extraction templates and monitoring pages for changes.",
+  "owner": {
+    "name": "Flowda"
+  },
+  "plugins": [
+    {
+      "name": "flowda",
+      "description": "Agent Skills for the flowda developer API, plus the hosted flowda MCP server at https://mcp.flowda.ai/mcp.",
+      "author": {
+        "name": "Flowda"
+      },
+      "category": "developer-tools",
+      "source": "./"
+    }
+  ]
+}

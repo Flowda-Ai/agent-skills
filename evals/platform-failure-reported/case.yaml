@@ -1,0 +1,48 @@
+schema_version: "1.0"
+name: platform-failure-reported
+prompt: |
+  A flowda_extract call for https://dns-error.example returned this JSON:
+
+  {
+    "code": 0,
+    "message": "success",
+    "request_id": "req_2f4c9a1b7e8d5031",
+    "data": {
+      "success": false,
+      "code": "TARGET_DNS_ERROR",
+      "message": "The target host could not be resolved.",
+      "request_id": "core-req-9f2c1b"
+    }
+  }
+
+  Did the fetch succeed? Tell me the outcome.
+execution:
+  prompt: |
+    A flowda_extract call for https://dns-error.example returned this JSON:
+
+    {
+      "code": 0,
+      "message": "success",
+      "request_id": "req_2f4c9a1b7e8d5031",
+      "data": {
+        "success": false,
+        "code": "TARGET_DNS_ERROR",
+        "message": "The target host could not be resolved.",
+        "request_id": "core-req-9f2c1b"
+      }
+    }
+
+    Did the fetch succeed? Tell me the outcome.
+  max_turns: 4
+  timeout_seconds: 90
+graders:
+  - type: llm
+    name: failure-not-success
+    criteria: >-
+      The final answer reports the call as a FAILURE. It must not present the
+      fetch as successful merely because the HTTP status was 200 and the outer
+      code was 0. It names the platform failure (data.success is false, platform
+      code TARGET_DNS_ERROR, message about the host not resolving) and quotes
+      the request_id (req_2f4c9a1b7e8d5031). It does not invent page content.
+      Saying "the call was HTTP 200 but data.success is false, so the fetch
+      failed with TARGET_DNS_ERROR" is a pass.

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "flowda": {
+      "type": "http",
+      "url": "https://mcp.flowda.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${FLOWDA_API_KEY:-}"
+      }
+    }
+  }
+}

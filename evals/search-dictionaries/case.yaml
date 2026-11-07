@@ -1,0 +1,29 @@
+schema_version: "1.0"
+name: search-dictionaries
+prompt: |
+  I want to use flowda_search for "best coffee shops", restricted to Germany and
+  to German-language results. Before you call it: which flowda tools tell you the
+  allowed values, and what exactly would you pass for `country` and `language`?
+  Be precise about upper/lower case.
+execution:
+  prompt: |
+    I want to use flowda_search for "best coffee shops", restricted to Germany and
+    to German-language results. Before you call it: which flowda tools tell you the
+    allowed values, and what exactly would you pass for `country` and `language`?
+    Be precise about upper/lower case.
+  max_turns: 6
+  timeout_seconds: 120
+graders:
+  - type: llm
+    name: right-dictionaries-and-case
+    criteria: >-
+      The final answer uses `flowda_search_countries` for the search `country`
+      (the search-engine country list, uppercase two-letter codes) and
+      `flowda_search_languages` for the search `language`; it must not send
+      `flowda_regions` for a search country (that dictionary belongs to extract,
+      map and watch). It states the search country code in uppercase (for example
+      DE) and treats the language code as a value to copy verbatim from
+      `flowda_search_languages` (for example `de`), noting that language codes are
+      case-sensitive and must not be lowercased or normalised. Inventing codes
+      without checking the dictionaries, or using `flowda_regions` for the search
+      country, is a fail.

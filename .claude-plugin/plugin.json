@@ -1,0 +1,21 @@
+{
+  "name": "flowda",
+  "version": "1.0.0",
+  "description": "Agent Skills for the flowda developer API: fetch a page, search the web, enumerate a site, run a published extraction template and monitor a page for changes through the hosted flowda MCP server.",
+  "author": {
+    "name": "Flowda"
+  },
+  "homepage": "https://github.com/Flowda-Ai/agent-skills",
+  "repository": "https://github.com/Flowda-Ai/agent-skills",
+  "keywords": [
+    "flowda",
+    "web-fetching",
+    "web-scraping",
+    "extract",
+    "search",
+    "map",
+    "web-monitoring",
+    "mcp",
+    "agent-skills"
+  ]
+}

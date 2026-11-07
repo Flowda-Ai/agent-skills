@@ -1,0 +1,19 @@
+schema_version: "1.0"
+name: extract-over-search
+prompt: |
+  Read the page at https://example.com/blog/post and summarize it for me.
+execution:
+  prompt: |
+    Read the page at https://example.com/blog/post and summarize it for me.
+  max_turns: 6
+  timeout_seconds: 120
+graders:
+  - type: llm
+    name: routes-to-extract
+    criteria: >-
+      The final answer routes the request to the flowda extract capability
+      (`flowda_extract`, described as fetching/reading one page), not to
+      `flowda_search`, `flowda_map` or `flowda_watch`. It does not claim to have
+      already read the page unless a tool call actually succeeded. A plan that
+      calls `flowda_extract` with the given URL and then summarizes the returned
+      markdown is a pass.

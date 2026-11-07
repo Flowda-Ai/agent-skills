@@ -1,0 +1,57 @@
+schema_version: "1.0"
+name: quote-request-id
+prompt: |
+  A flowda_extract call returned this JSON. Report the result to the user; they
+  asked for a one-paragraph summary of the page.
+
+  {
+    "code": 0,
+    "message": "success",
+    "request_id": "req_8b1d4e6f2a9c0375",
+    "data": {
+      "success": true,
+      "request_id": "req_01K7XT3B6C9D4M2Q",
+      "credits_used": 1,
+      "outputs": {
+        "markdown": "# Example Domain\n\nThis domain is for use in illustrative examples in documents."
+      },
+      "meta": {
+        "strategy_used": "X1",
+        "cache_hit": true
+      }
+    }
+  }
+execution:
+  prompt: |
+    A flowda_extract call returned this JSON. Report the result to the user; they
+    asked for a one-paragraph summary of the page.
+
+    {
+      "code": 0,
+      "message": "success",
+      "request_id": "req_8b1d4e6f2a9c0375",
+      "data": {
+        "success": true,
+        "request_id": "req_01K7XT3B6C9D4M2Q",
+        "credits_used": 1,
+        "outputs": {
+          "markdown": "# Example Domain\n\nThis domain is for use in illustrative examples in documents."
+        },
+        "meta": {
+          "strategy_used": "X1",
+          "cache_hit": true
+        }
+      }
+    }
+  max_turns: 4
+  timeout_seconds: 90
+graders:
+  - type: llm
+    name: quotes-request-ids
+    criteria: >-
+      The final answer reports the successful fetch and quotes the envelope
+      request_id exactly (req_8b1d4e6f2a9c0375) and the fetch-platform request_id
+      returned inside data (req_01K7XT3B6C9D4M2Q). It does not report the result
+      without a request_id, and it does not substitute a paraphrase such as
+      "request 8b1d..." for the exact id. Mentioning credits_used 1 or the cache
+      hit is fine but not required.

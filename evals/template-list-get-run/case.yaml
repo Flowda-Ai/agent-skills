@@ -1,0 +1,23 @@
+schema_version: "1.0"
+name: template-list-get-run
+prompt: |
+  I need structured product data for Amazon ASIN B0D1XYZ123. Walk me through
+  exactly how to get it with the flowda template tools, in the right order.
+execution:
+  prompt: |
+    I need structured product data for Amazon ASIN B0D1XYZ123. Walk me through
+    exactly how to get it with the flowda template tools, in the right order.
+  max_turns: 6
+  timeout_seconds: 120
+graders:
+  - type: llm
+    name: list-get-run
+    criteria: >-
+      The final answer follows the catalogue flow: first `flowda_templates_list`
+      to see the callable templates, then `flowda_templates_get` for the chosen
+      template to read its input schema (which keys `params` accepts), then
+      `flowda_template` with `template: amazon_product` and `params` containing
+      the ASIN. It never proposes hand-written CSS selectors, extract options or
+      guessing the params shape, notes the flat 5-credit cost and that the
+      template must be identified by its published id. Running `flowda_template`
+      first without list/get, or inventing selectors, is a fail.

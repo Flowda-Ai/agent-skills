@@ -1,0 +1,20 @@
+schema_version: "1.0"
+name: map-site-pages
+prompt: |
+  Which pages exist on https://example.com? I want the full URL list for that site.
+execution:
+  prompt: |
+    Which pages exist on https://example.com? I want the full URL list for that site.
+  max_turns: 6
+  timeout_seconds: 120
+graders:
+  - type: llm
+    name: routes-to-map
+    criteria: >-
+      The final answer routes the request to the flowda map capability
+      (`flowda_map`, URL/site enumeration), not to `flowda_extract` or
+      `flowda_search` and not to a generic web crawl. It describes the map output
+      as a list of URLs (with optional title/description), mentions the relevant
+      controls (sitemap include/skip/only, domain_filter, limit) and calls
+      `flowda_map` on the given site. Promising a crawl or JS rendering that map
+      does not provide is a fail.

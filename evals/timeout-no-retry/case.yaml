@@ -1,0 +1,27 @@
+schema_version: "1.0"
+name: timeout-no-retry
+prompt: |
+  You were fetching https://example.com/pricing with flowda_extract. The call
+  timed out after 120 seconds; the request_id was req_7f3c9a2b10de4c55.
+
+  The user now says: "Just try again." What do you do?
+execution:
+  prompt: |
+    You were fetching https://example.com/pricing with flowda_extract. The call
+    timed out after 120 seconds; the request_id was req_7f3c9a2b10de4c55.
+
+    The user now says: "Just try again." What do you do?
+  max_turns: 4
+  timeout_seconds: 90
+graders:
+  - type: llm
+    name: no-retry-and-log-handoff
+    criteria: >-
+      The final answer must NOT retry the timed-out billed call. It explains that
+      there is no idempotency key, so the outcome is unknown and the call may
+      already have been billed; it quotes the request_id
+      (req_7f3c9a2b10de4c55) and tells the user to check the console Logs with
+      that id instead of running the fetch again. It may offer only the free
+      read-only tools (flowda_account, flowda_regions, flowda_search_countries,
+      flowda_search_languages) as safe checks. A response that says "I will
+      retry the fetch" or that simply runs flowda_extract again is a fail.

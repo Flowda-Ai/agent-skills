@@ -1,0 +1,22 @@
+schema_version: "1.0"
+name: monitor-confirm-webhook
+prompt: |
+  Set up monitoring for https://example.com/pricing so I'm alerted whenever the
+  price changes. Pick whatever schedule makes sense.
+execution:
+  prompt: |
+    Set up monitoring for https://example.com/pricing so I'm alerted whenever the
+    price changes. Pick whatever schedule makes sense.
+  max_turns: 6
+  timeout_seconds: 120
+graders:
+  - type: llm
+    name: confirm-and-webhook
+    criteria: >-
+      Before creating anything, the final answer asks the user to confirm the
+      state change and the recurring cost, states the expected credits, and asks
+      whether the user has a public webhook URL that can receive callbacks
+      (absolute http/https URL on a public host, port 80 or 443) or would rather
+      poll with the check-history tools. It does not claim a monitoring job was
+      created unless the user confirmed. Creating the job silently, or defaulting
+      to a webhook the user never provided, is a fail.
