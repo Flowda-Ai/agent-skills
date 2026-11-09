@@ -50,6 +50,17 @@ watch for changes.
 - The user wants to keep checking a page for changes over time: that is a monitor
   job (`flowda_watch_create`), not a loop of extracts.
 
+## A typical call
+
+<!-- request-example: flowda_extract -->
+```json
+{"url": "https://example.com/article", "formats": ["markdown"]}
+```
+
+`url` is the only required field and `formats` is the only one you usually set:
+`markdown` for reading, add `links` when harvesting URLs. Leave `only_main_content`
+and `max_age_ms` at their defaults unless the task needs otherwise.
+
 ## Choose the formats
 
 Request `markdown` (the default) for reading. Add `links` when the goal is

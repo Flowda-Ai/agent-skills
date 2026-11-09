@@ -8,7 +8,9 @@ The pack ships two things that are installed separately:
   `https://mcp.flowda.ai/mcp`. The skills assume its 20 `flowda_*` tools exist.
 
 This guide covers every supported client, how to verify the connection, and what
-each error means.
+each error means. If you are an AI agent rather than a person, read
+[agent-onboarding.md](agent-onboarding.md): it is the same setup in a form you can
+follow on your own.
 
 ## 0. How the key reaches flowda (read this first)
 
@@ -126,7 +128,26 @@ Inspect or remove it with `claude mcp get flowda` / `claude mcp remove flowda`.
 The header is stored with the server definition, so changing the environment
 variable later does not change the stored credential — re-add the server.
 
-## 4. Cursor, Cline, Continue
+## 4. Cursor
+
+### 4.1 Cursor plugin (skills + MCP in one)
+
+The repository is a Cursor plugin: `.cursor-plugin/plugin.json` is the manifest and
+`.cursor-plugin/marketplace.json` lets Cursor import the repository as a marketplace.
+
+1. **Customize → Plugins → Add from GitHub Repository**, enter
+   `https://github.com/Flowda-Ai/agent-skills`, then install the `flowda` plugin.
+2. Set the plugin variable **`FLOWDA_API_KEY`** in **Customize → Plugins → flowda →
+   Configure**. The plugin's `mcp.json` sends it as
+   `Authorization: Bearer ${FLOWDA_API_KEY}`.
+3. Restart Cursor, then confirm `flowda` appears under MCP and that the six skills
+   are listed.
+
+The plugin's root `mcp.json` is the Cursor-readable copy of the same server that
+`.mcp.json` configures for Claude Code; the key is a plugin variable here and an
+environment variable there.
+
+### 4.2 Cursor / Cline / Continue without the plugin (MCP only)
 
 Add this server object to the client's MCP configuration:
 

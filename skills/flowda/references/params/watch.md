@@ -29,6 +29,33 @@ Scope `watch` · `/v1` budget 30s · gateway pre-charge 1 credit.
 
 Body field names are identical for `application/json` and `application/x-www-form-urlencoded`.
 
+**Example arguments** (what a client passes as the tool's `arguments`):
+
+```json
+{
+  "country": "US",
+  "diff_modes": [
+    "auto"
+  ],
+  "mask": {
+    "enabled": true,
+    "exclude": [
+      "iso_timestamp",
+      "counter"
+    ]
+  },
+  "retention_days": 30,
+  "schedule": {
+    "interval_seconds": 3600
+  },
+  "selector": "main .price",
+  "selector_type": "css",
+  "timezone": "Asia/Shanghai",
+  "url": "https://www.example.com/pricing",
+  "webhook_url": "https://your-app.example.com/hooks/flowda"
+}
+```
+
 ### `flowda_watch_list` · `GET /v1/watch/jobs`
 
 Scope `watch` · `/v1` budget 30s · gateway pre-charge 1 credit.
@@ -78,6 +105,19 @@ Scope `watch` · `/v1` budget 30s · gateway pre-charge 1 credit.
 | webhook_url | string | no | nullable |
 
 Body field names are identical for `application/json` and `application/x-www-form-urlencoded`.
+
+**Example arguments** (what a client passes as the tool's `arguments`):
+
+```json
+{
+  "retention_days": 90,
+  "schedule": {
+    "cron": "*/30 * * * *"
+  },
+  "timezone": "Asia/Shanghai",
+  "webhook_url": null
+}
+```
 
 ### `flowda_watch_delete` · `DELETE /v1/watch/jobs/{id}`
 

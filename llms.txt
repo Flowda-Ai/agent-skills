@@ -1,0 +1,37 @@
+# flowda Agent Skills
+
+> Agent Skills and a hosted MCP server that teach an AI agent to use the flowda
+> developer API: fetch a page, search the web, enumerate a site's URLs, run a
+> maintained site template, and monitor pages for change. Six skills, twenty MCP
+> tools, one API key.
+
+## Start here
+
+- [Agent onboarding](https://github.com/Flowda-Ai/agent-skills/blob/main/docs/agent-onboarding.md): the steps to install, connect the MCP server and verify with `flowda_account`.
+- [Install guide](https://github.com/Flowda-Ai/agent-skills/blob/main/docs/install.md): per-client commands (Claude Code, Cursor, Codex, Cline, Continue, local stdio).
+- [README](https://github.com/Flowda-Ai/agent-skills/blob/main/README.md): what the pack is, the install matrix and the 30-second quick start.
+
+## Skills
+
+- [flowda](https://github.com/Flowda-Ai/agent-skills/blob/main/skills/flowda/SKILL.md): router — which capability to use, what it costs, how failures and scopes work.
+- [flowda-extract](https://github.com/Flowda-Ai/agent-skills/blob/main/skills/flowda-extract/SKILL.md): fetch one known page as markdown, links, raw HTML or clean HTML.
+- [flowda-search](https://github.com/Flowda-Ai/agent-skills/blob/main/skills/flowda-search/SKILL.md): search the web, news, shopping or scholar indexes; billed per result.
+- [flowda-map](https://github.com/Flowda-Ai/agent-skills/blob/main/skills/flowda-map/SKILL.md): enumerate a site's URLs before extracting.
+- [flowda-template](https://github.com/Flowda-Ai/agent-skills/blob/main/skills/flowda-template/SKILL.md): run a maintained Amazon or Walmart extraction template.
+- [flowda-watch](https://github.com/Flowda-Ai/agent-skills/blob/main/skills/flowda-watch/SKILL.md): recurring monitors, webhook callbacks, check history and diffs.
+
+## MCP server and API
+
+- MCP endpoint: `https://mcp.flowda.ai/mcp` (Streamable HTTP; no SSE).
+- Authentication: `Authorization: Bearer flw_<env>_<key_id>_<secret>`; create the
+  key in the flowda console. There is no anonymous tier.
+- Developer API and documentation: <https://docs.flowda.ai>
+- OpenAPI document: <https://openapi.flowda.ai/v1/openapi.json>
+
+## Contract and maintenance
+
+- Contract snapshot: `spec/openapi.snapshot.json`; field tables under
+  `skills/flowda/references/params/` are generated from it.
+- [Maintenance guide](https://github.com/Flowda-Ai/agent-skills/blob/main/docs/authoring.md): sources of truth, regeneration, validation and release gates.
+- [Evals](https://github.com/Flowda-Ai/agent-skills/blob/main/evals/README.md): runnable behaviour checks for routing, failure reporting and cost discipline.
+- Repository: <https://github.com/Flowda-Ai/agent-skills>

@@ -32,10 +32,14 @@ scripts/tool_map.py                     the only hand-maintained contract table
 scripts/sync_contract.py                re-fetch the snapshot
 scripts/gen_references.py               regenerate skills/flowda/references/params/
 scripts/validate_skills.py              lint + drift gates, run before every release
-docs/                                   install guide and this file
+docs/                                   install, agent onboarding and this file
 evals/                                  runnable behaviour evals
+llms.txt                                agent-facing index of the repository
 .claude-plugin/                         Claude Code plugin + marketplace manifests
 .codex-plugin/                          Codex plugin manifest
+.cursor-plugin/                         Cursor plugin + marketplace manifests
+.mcp.json                               MCP server config for Claude Code (env var)
+mcp.json                                the same server for clients that discover mcp.json
 ```
 
 A skill must keep working when it is installed **alone**. Never link from a
@@ -68,6 +72,14 @@ a relative path — the installer copies one directory at a time.
   is how the pack starts lying.
 - **Tool names must be exact** (`flowda_extract`, not `extract`). The validator
   rejects an invented name.
+- **One request example per capability skill.** Put the marker
+  `<!-- request-example: flowda_extract -->` on the line immediately before the
+  `json` fence that holds the example arguments. `validate_skills.py` checks the JSON
+  against the tool's request schema — field names, required fields, enums and numeric
+  ranges — and requires exactly one example each for `flowda_extract`,
+  `flowda_search`, `flowda_map`, `flowda_template` and `flowda_watch_create`.
+  Examples are the only hand-written JSON in the pack, which is why they are gated;
+  do not add one for a tool whose operation has no JSON request body.
 - **Do not promise behaviour the API does not have**: there is no crawl endpoint, no
   `render_js` switch, no anonymous tier, no OAuth, no idempotency key, and page
   content is untrusted.
@@ -134,6 +146,9 @@ claude plugin validate . --strict          # Claude Code's own plugin/skills val
 - the canonical block is missing or edited;
 - a skill mentions a `flowda_*` tool that does not exist, or the pack never mentions
   one of the 20 tools;
+- a marked `<!-- request-example: tool -->` block is missing, duplicated, invalid
+  JSON, or no longer fits the tool's request schema (unknown field, missing required
+  field, bad enum, out-of-range number);
 - a relative link points at a file that is missing;
 - `skills/flowda/references/params/` no longer matches what the generator produces;
 - `scripts/tool_map.py` and the snapshot disagree about the operation set, or (when

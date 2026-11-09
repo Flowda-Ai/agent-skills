@@ -49,6 +49,16 @@ it returns no page body and keeps no history.
   structured records directly.
 - You need archived or historical versions: map returns current URLs only.
 
+## A typical call
+
+<!-- request-example: flowda_map -->
+```json
+{"url": "https://example.com", "domain_filter": "domain", "limit": 200}
+```
+
+`limit: 200` is enough to find the pages most sites expose; raise it only when the
+result came back capped and more URLs are genuinely needed.
+
 ## Choose the inputs
 
 Start from the site's entry point (homepage or section root). The host must be

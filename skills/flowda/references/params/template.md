@@ -16,6 +16,19 @@ Scope `extract` · `/v1` budget 130s · gateway pre-charge 5 credit.
 
 Body field names are identical for `application/json` and `application/x-www-form-urlencoded`.
 
+**Example arguments** (what a client passes as the tool's `arguments`):
+
+```json
+{
+  "params": {
+    "pages": 1,
+    "query": "wireless headphones",
+    "zipcode": "90017"
+  },
+  "template": "walmart_search"
+}
+```
+
 ### `flowda_templates_list` · `GET /v1/templates`
 
 Scope `extract` · `/v1` budget 30s · gateway pre-charge 1 credit.

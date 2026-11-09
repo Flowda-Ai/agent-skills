@@ -18,3 +18,15 @@ Scope `map` · `/v1` budget 130s · gateway pre-charge 1 credit.
 | url | string | yes | Site to enumerate; the host must be publicly resolvable. |
 
 Body field names are identical for `application/json` and `application/x-www-form-urlencoded`.
+
+**Example arguments** (what a client passes as the tool's `arguments`):
+
+```json
+{
+  "country": "US",
+  "domain_filter": "domain",
+  "limit": 5000,
+  "sitemap": "include",
+  "url": "https://www.example.com"
+}
+```

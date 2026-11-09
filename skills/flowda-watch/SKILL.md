@@ -59,6 +59,16 @@ Every Watch response except `flowda_watch_run_check` nests the platform body one
 deeper (`data.data.job`, `.jobs`, `.checks`); `run_check` is flat (`data.meta`,
 `data.diff`). Use the returned `job_id` as `{id}` and the returned `check_id`.
 
+## A typical call
+
+<!-- request-example: flowda_watch_create -->
+```json
+{"url": "https://example.com/pricing", "schedule": {"interval_seconds": 3600}, "timezone": "UTC"}
+```
+
+One hour is a reasonable default for a pricing page; add `webhook_url` only when the
+user has a public endpoint (see below), and confirm the schedule before creating.
+
 ## Create a job
 
 - `url` is required, absolute `http`/`https`, publicly resolvable, and immutable after

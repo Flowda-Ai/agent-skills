@@ -197,7 +197,8 @@ def operation_block(spec: dict, op_id: str, op: dict) -> list[str]:
 
     body = op["operation"].get("requestBody")
     if body:
-        content = deref(spec, body).get("content") or {}
+        body_resolved = deref(spec, body)
+        content = body_resolved.get("content") or {}
         media = content.get("application/json") or next(iter(content.values()), None)
         schema = media.get("schema") if media else None
         rows = flatten_fields(spec, schema) if schema else []
@@ -210,6 +211,20 @@ def operation_block(spec: dict, op_id: str, op: dict) -> list[str]:
             ]
         elif not parameters:
             lines += ["This tool takes no arguments.", ""]
+
+        # The document's own request example is the only example we can emit
+        # without inventing data. It is the same object an MCP client passes as
+        # the tool's `arguments`.
+        example = body_resolved.get("example")
+        if isinstance(example, dict) and example:
+            lines += [
+                "**Example arguments** (what a client passes as the tool's `arguments`):",
+                "",
+                "```json",
+                json.dumps(example, ensure_ascii=False, indent=2),
+                "```",
+                "",
+            ]
     elif not parameters:
         lines += ["This tool takes no arguments.", ""]
     else:

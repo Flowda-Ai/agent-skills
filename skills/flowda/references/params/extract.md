@@ -24,3 +24,20 @@ Scope `extract` · `/v1` budget 130s · gateway pre-charge 1 credit.
 | wait_for_ms | integer | no | Extra wait after page load; must be at most half of timeout_ms. · default `0` · range 0–30000 |
 
 Body field names are identical for `application/json` and `application/x-www-form-urlencoded`.
+
+**Example arguments** (what a client passes as the tool's `arguments`):
+
+```json
+{
+  "advanced_mode": true,
+  "country": "US",
+  "formats": [
+    "markdown",
+    "links"
+  ],
+  "max_age_ms": 0,
+  "only_main_content": true,
+  "timeout_ms": 60000,
+  "url": "https://www.example.com/products/widget"
+}
+```

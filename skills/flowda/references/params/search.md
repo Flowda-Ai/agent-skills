@@ -29,3 +29,25 @@ Scope `search` · `/v1` budget 60s · gateway pre-charge 1 credit.
 | time_range | string | no | Recency filter. · one of `hour`, `day`, `week`, `month`, `year` |
 
 Body field names are identical for `application/json` and `application/x-www-form-urlencoded`.
+
+**Example arguments** (what a client passes as the tool's `arguments`):
+
+```json
+{
+  "country": "US",
+  "extract_content": true,
+  "extract_options": {
+    "formats": [
+      "markdown",
+      "links"
+    ],
+    "max_age_ms": 172800000,
+    "only_main_content": true,
+    "timeout_ms": 60000
+  },
+  "max_results": 10,
+  "query": "espresso machine",
+  "source": "web",
+  "time_range": "week"
+}
+```

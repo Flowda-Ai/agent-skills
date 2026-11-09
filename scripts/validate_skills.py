@@ -44,7 +44,15 @@ DEFAULT_MAX_LINES = 180
 NAME_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 TOOL_RE = re.compile(r"\bflowda_[a-z][a-z0-9_]*\b")
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)\s]+)\)")
+EXAMPLE_RE = re.compile(r"<!-- request-example: (flowda_[a-z0-9_]+) -->\s*\n```json\n(.*?)\n```", re.S)
 GRADER_TYPES = {"regex", "tool_order", "tool_used", "file_exists", "llm", "baseline"}
+EXPECTED_EXAMPLE_TOOLS = {
+    "flowda_extract",
+    "flowda_search",
+    "flowda_map",
+    "flowda_template",
+    "flowda_watch_create",
+}
 MAX_DESCRIPTION = 1024
 
 errors: list[str] = []
@@ -205,6 +213,114 @@ def check_links(skills: dict[str, Path]) -> None:
                     )
 
 
+def body_schema(spec: dict, op: dict) -> dict | None:
+    """Return the JSON request-body schema of an operation, or None."""
+    body = op["operation"].get("requestBody")
+    if not body:
+        return None
+    content = gen_references.deref(spec, body).get("content") or {}
+    media = content.get("application/json") or next(iter(content.values()), None)
+    if not media or not media.get("schema"):
+        return None
+    return gen_references.deref(spec, media["schema"])
+
+
+def validate_example_value(spec: dict, schema: dict, value, path: str, depth: int = 0) -> None:
+    """Check one example value against its JSON schema, recursively."""
+    schema = gen_references.deref(spec, schema)
+    if depth > 8:
+        return
+    if value is None:
+        if not schema.get("nullable"):
+            fail(f"{path}: null is not allowed here")
+        return
+
+    enum = schema.get("enum")
+    if enum and value not in enum:
+        fail(f"{path}: {value!r} is not one of {enum}")
+        return
+
+    kind = schema.get("type")
+    if kind == "object" or "properties" in schema:
+        if not isinstance(value, dict):
+            fail(f"{path}: expected an object, got {type(value).__name__}")
+            return
+        properties = schema.get("properties") or {}
+        if schema.get("additionalProperties") is not True:
+            for key in value:
+                if key not in properties:
+                    fail(f"{path}.{key}: not a field of this request")
+        for key in schema.get("required") or []:
+            if key not in value:
+                fail(f"{path}: missing required field {key!r}")
+        for key, sub_value in value.items():
+            if key in properties:
+                validate_example_value(spec, properties[key], sub_value, f"{path}.{key}", depth + 1)
+        return
+
+    if kind == "array":
+        if not isinstance(value, list):
+            fail(f"{path}: expected an array, got {type(value).__name__}")
+            return
+        for index, item in enumerate(value):
+            validate_example_value(spec, schema.get("items") or {}, item, f"{path}[{index}]", depth + 1)
+        return
+
+    expected = {
+        "string": str,
+        "boolean": bool,
+        "integer": int,
+        "number": (int, float),
+    }.get(kind)
+    if expected is None:
+        return
+    if not isinstance(value, expected) or (kind in ("integer", "number") and isinstance(value, bool)):
+        fail(f"{path}: expected {kind}, got {type(value).__name__}")
+        return
+    minimum, maximum = schema.get("minimum"), schema.get("maximum")
+    if minimum is not None and value < minimum:
+        fail(f"{path}: {value} is below the minimum {minimum}")
+    if maximum is not None and value > maximum:
+        fail(f"{path}: {value} is above the maximum {maximum}")
+
+
+def check_request_examples() -> None:
+    """Validate the marked `<!-- request-example: tool -->` JSON blocks against the spec.
+
+    These examples are the only hand-written examples in the pack, so the drift is
+    caught here instead of by a user's failed call.
+    """
+    spec, _digest = gen_references.load_snapshot()
+    operations = gen_references.collect_operations(spec)
+    seen: dict[str, list[str]] = {}
+    for path in sorted(SKILLS.rglob("SKILL.md")):
+        text = read_text(path)
+        for match in EXAMPLE_RE.finditer(text):
+            tool, raw = match.group(1), match.group(2)
+            where = str(path.relative_to(REPO))
+            if tool not in tool_map.OPERATION_BY_TOOL:
+                fail(f"{where}: request example for unknown tool {tool!r}")
+                continue
+            seen.setdefault(tool, []).append(where)
+            try:
+                value = json.loads(raw)
+            except json.JSONDecodeError as exc:
+                fail(f"{where}: request example for {tool} is not valid JSON ({exc})")
+                continue
+            operation = operations.get(tool_map.OPERATION_BY_TOOL[tool])
+            schema = body_schema(spec, operation) if operation else None
+            if schema is None:
+                fail(f"{where}: {tool} has no JSON request body in the spec, so it must not carry a JSON example")
+                continue
+            validate_example_value(spec, schema, value, f"{where}: {tool}")
+
+    for tool in sorted(EXPECTED_EXAMPLE_TOOLS - set(seen)):
+        fail(f"missing a request example for {tool} (mark one with <!-- request-example: {tool} -->)")
+    for tool, where in sorted(seen.items()):
+        if len(where) > 1:
+            fail(f"duplicate request examples for {tool}: {', '.join(where)}")
+
+
 def check_generated(params_dir: Path) -> None:
     spec, digest = gen_references.load_snapshot()
     expected = gen_references.render_all(spec, digest)
@@ -270,13 +386,26 @@ def check_manifests() -> None:
         REPO / ".claude-plugin" / "marketplace.json",
         REPO / ".mcp.json",
         REPO / ".codex-plugin" / "plugin.json",
+        REPO / ".cursor-plugin" / "plugin.json",
+        REPO / ".cursor-plugin" / "marketplace.json",
+        REPO / "mcp.json",
+        REPO / "llms.txt",
+        REPO / "docs" / "agent-onboarding.md",
         REPO / "README.md",
         REPO / "docs" / "install.md",
     ]
     for path in required:
         if not path.exists():
             fail(f"missing {path.relative_to(REPO)}")
-    for rel in (".claude-plugin/plugin.json", ".claude-plugin/marketplace.json", ".mcp.json", ".codex-plugin/plugin.json"):
+    for rel in (
+        ".claude-plugin/plugin.json",
+        ".claude-plugin/marketplace.json",
+        ".mcp.json",
+        ".codex-plugin/plugin.json",
+        ".cursor-plugin/plugin.json",
+        ".cursor-plugin/marketplace.json",
+        "mcp.json",
+    ):
         path = REPO / rel
         if not path.exists():
             continue
@@ -299,6 +428,63 @@ def check_manifests() -> None:
             skills_path = data.get("skills")
             if not skills_path:
                 fail(".codex-plugin/plugin.json: missing skills path")
+        if rel == ".cursor-plugin/plugin.json":
+            for key in ("name", "version", "description", "author"):
+                if not data.get(key):
+                    fail(f"{rel}: missing required field {key!r}")
+            skills_path = data.get("skills")
+            if skills_path and not (REPO / skills_path).exists():
+                fail(f"{rel}: skills path {skills_path!r} does not exist")
+        if rel == ".cursor-plugin/marketplace.json":
+            plugins = data.get("plugins") or []
+            entry = next((plugin for plugin in plugins if plugin.get("name") == "flowda"), None)
+            if entry is None:
+                fail(".cursor-plugin/marketplace.json: no plugin named flowda")
+            elif entry.get("source") != "./":
+                fail(".cursor-plugin/marketplace.json: the flowda entry must use source './'")
+        if rel == "mcp.json":
+            server = (data.get("mcpServers") or {}).get("flowda") or {}
+            if server.get("url") != "https://mcp.flowda.ai/mcp":
+                fail("mcp.json: mcpServers.flowda.url must be https://mcp.flowda.ai/mcp")
+            placeholder = json.dumps(server.get("headers") or {})
+            if "FLOWDA_API_KEY" in placeholder:
+                plugin_manifest = REPO / ".cursor-plugin" / "plugin.json"
+                declared = {}
+                if plugin_manifest.exists():
+                    declared = (
+                        (json.loads(plugin_manifest.read_text(encoding="utf-8")).get("variables") or {}).get("properties")
+                        or {}
+                    )
+                if "FLOWDA_API_KEY" not in declared:
+                    fail("mcp.json uses ${FLOWDA_API_KEY} but .cursor-plugin/plugin.json declares no such variable")
+
+
+def check_agent_docs() -> None:
+    """The agent-facing entry points: llms.txt and docs/agent-onboarding.md."""
+    llms = REPO / "llms.txt"
+    if not llms.exists():
+        fail("missing llms.txt")
+    else:
+        text = read_text(llms)
+        for target in re.findall(r"\]\(([^)\s]+)\)", text):
+            if target.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            if not (REPO / target.split("#", 1)[0]).exists():
+                fail(f"llms.txt: broken relative link {target!r}")
+        for name in sorted(EXPECTED_SKILLS):
+            if name not in text:
+                fail(f"llms.txt: does not mention the {name!r} skill")
+
+    onboarding = REPO / "docs" / "agent-onboarding.md"
+    if not onboarding.exists():
+        fail("missing docs/agent-onboarding.md")
+    else:
+        text = read_text(onboarding)
+        for needle in ("flowda_account", "FLOWDA_API_KEY", "https://mcp.flowda.ai/mcp"):
+            if needle not in text:
+                fail(f"docs/agent-onboarding.md: does not mention {needle!r}")
+        if len(text.splitlines()) < 40:
+            fail("docs/agent-onboarding.md: too short to onboard an agent")
 
 
 def check_evals() -> None:
@@ -323,10 +509,12 @@ def main() -> int:
     bodies = check_layout_and_frontmatter(skills)
     check_canonical_block(skills, bodies)
     check_tool_names(bodies)
+    check_request_examples()
     check_links(skills)
     check_generated(SKILLS / "flowda" / "references" / "params")
     check_contract()
     check_manifests()
+    check_agent_docs()
     check_evals()
 
     for note in notes:

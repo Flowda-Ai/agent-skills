@@ -71,6 +71,17 @@ identifier, not selectors.
 Do not invent a template id or a selector, and do not pass a template id the
 current list does not contain.
 
+## A typical call
+
+<!-- request-example: flowda_template -->
+```json
+{"template": "amazon_product", "params": {"asin": "B0D1XYZ123"}}
+```
+
+The ASIN comes from the user; the template id comes from the current
+`flowda_templates_list`, and the `params` keys come from that template's
+`params_schema` — never guess either.
+
 ## What exists today
 
 The catalogue currently lists six templates; treat this as an example of what may

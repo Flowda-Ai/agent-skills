@@ -46,6 +46,16 @@ call. `source` selects the corpus: `web` (default), `news`, `shopping` or `schol
 - `flowda_search_countries` and `flowda_search_languages` are free and define the only
   accepted values for `country` and `language`; call them before guessing a code.
 
+## A typical call
+
+<!-- request-example: flowda_search -->
+```json
+{"query": "wireless headphones reviews", "max_results": 5, "source": "web", "time_range": "month"}
+```
+
+Start at 5–10 results; add `country` / `language` only after reading the two
+dictionaries (the language codes are case-sensitive).
+
 ## Query rules
 
 - `query` is required, 1–256 characters. Keep it to one intent and refine with a new
