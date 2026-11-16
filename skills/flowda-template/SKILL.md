@@ -35,6 +35,16 @@ identifier, not selectors.
    every billed call: a template execution is 5 credits (an empty result is still 5),
    and a watch job bills per check on its schedule.
 
+## Cost gate (mandatory)
+
+Before calling `flowda_template`, send a user-visible message and stop:
+
+> This template execution costs 5 credits; an empty result is still billed. Proceed?
+
+Do not call `flowda_template` in the same turn as that question — wait for the
+user's answer. The free `flowda_templates_list` and `flowda_templates_get` calls
+come first, then the cost gate, then the billed run.
+
 ## When to use it
 
 - The site is one of the supported ones: Amazon or Walmart US product, search,
