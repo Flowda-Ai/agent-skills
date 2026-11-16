@@ -113,8 +113,9 @@ validator fails if a copy diverges from this block.
    returned by the tools rather than paraphrasing them.
 6. **Confirm before state changes and recurring cost.** Creating, updating, pausing,
    resuming or deleting a monitor job — and anything that starts a recurring charge —
-   needs the user's explicit go-ahead. State the expected cost in credits before an
-   expensive call.
+   needs the user's explicit go-ahead. State the expected cost in credits before
+   every billed call: a template execution is 5 credits (an empty result is still 5),
+   and a watch job bills per check on its schedule.
 <!-- canonical-rules:end -->
 
 ## 5. Who owns which file

@@ -31,8 +31,9 @@ identifier, not selectors.
    returned by the tools rather than paraphrasing them.
 6. **Confirm before state changes and recurring cost.** Creating, updating, pausing,
    resuming or deleting a monitor job — and anything that starts a recurring charge —
-   needs the user's explicit go-ahead. State the expected cost in credits before an
-   expensive call.
+   needs the user's explicit go-ahead. State the expected cost in credits before
+   every billed call: a template execution is 5 credits (an empty result is still 5),
+   and a watch job bills per check on its schedule.
 
 ## When to use it
 
@@ -106,7 +107,9 @@ A flat 5 credits per execution. A successful but empty result still costs 5
 credits: `data.success` is `true`, `data.outputs` is `null`, and the record count
 is 0. A failed execution (`data.success: false`) costs 0 credits. One execution
 collects one page, so another page or item is another 5 credits — confirm the
-budget before running many items.
+budget before running many items. Before every execution, state that this run
+costs 5 credits and that an empty result is still charged, and confirm the ASIN
+or item is a live product.
 
 ## Read the result
 

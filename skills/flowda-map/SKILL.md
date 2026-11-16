@@ -31,8 +31,9 @@ it returns no page body and keeps no history.
    returned by the tools rather than paraphrasing them.
 6. **Confirm before state changes and recurring cost.** Creating, updating, pausing,
    resuming or deleting a monitor job — and anything that starts a recurring charge —
-   needs the user's explicit go-ahead. State the expected cost in credits before an
-   expensive call.
+   needs the user's explicit go-ahead. State the expected cost in credits before
+   every billed call: a template execution is 5 credits (an empty result is still 5),
+   and a watch job bills per check on its schedule.
 
 ## When to use it
 
@@ -86,7 +87,7 @@ uppercase two-letter code (default `US`).
 Map is billed by discovery volume: the reference example charges 3 credits for 3
 discovered URLs, and `data.credits_used` is absent when nothing was billed. A
 bigger `limit` can return and bill more URLs, so treat a large request as a budget
-decision and state the likely cost before an expensive call.
+decision and state the likely cost before the call.
 
 ## Read the result
 

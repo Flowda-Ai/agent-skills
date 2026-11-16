@@ -112,8 +112,9 @@ there is no idempotency key.
    `extract_content: true` only when the content of the results is what the user wants.
 6. **Check free dictionaries, not the paid endpoint.** A wrong `country`/`language`
    value is caught by a free lookup, not by a rejected paid call.
-7. **State the cost before an expensive call**, and state the recurring nature of a
-   schedule before creating a watch job (an hourly interval means roughly 24 checks a
-   day, each around 1 credit). See [watch-lifecycle.md](watch-lifecycle.md).
+7. **State the cost before every billed call.** A template execution is 5 credits even
+   when the result is empty; a watch job bills per check (an hourly interval means
+   roughly 24 checks a day, each around 1 credit), so state both the per-check cost and
+   the expected daily spend before creating one. See [watch-lifecycle.md](watch-lifecycle.md).
 8. **Never retry a billed call.** A retry is a second charge; report the `request_id`
    and send the user to the console Logs.

@@ -36,8 +36,9 @@ only reports what changed since the previous successful check.
    returned by the tools rather than paraphrasing them.
 6. **Confirm before state changes and recurring cost.** Creating, updating, pausing,
    resuming or deleting a monitor job — and anything that starts a recurring charge —
-   needs the user's explicit go-ahead. State the expected cost in credits before an
-   expensive call.
+   needs the user's explicit go-ahead. State the expected cost in credits before
+   every billed call: a template execution is 5 credits (an empty result is still 5),
+   and a watch job bills per check on its schedule.
 
 ## Tool map
 
@@ -88,7 +89,7 @@ user has a public endpoint (see below), and confirm the schedule before creating
   `session_token`, `tracking_param`, `cache_buster`, `resource_hash`, `iframe_marker`.
 - `retention_days` is 0–365 (default 30); 0 keeps check history indefinitely.
 - `headers` adds request headers; `Host` and hop-by-hop headers are rejected.
-- Confirm the URL, schedule, timezone and recurring cost with the user before creating.
+- Confirm the URL, schedule, timezone and recurring cost with the user before creating. State the per-check credit cost and the expected checks per day (hourly is about 24 checks, so plan the daily credit spend), then wait for the user's go-ahead.
 
 ## Webhook or polling
 
