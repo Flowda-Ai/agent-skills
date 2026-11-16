@@ -115,7 +115,11 @@ user has a public endpoint (see below), and confirm the schedule before creating
   and `details` names the rejection.
 - `webhook_secret` is returned exactly once, only when the address is new to the
   account (create or update). Tell the user to store it now; never repeat it later —
-  it is not returned by `flowda_watch_get` or the list.
+  it is not returned by `flowda_watch_get` or the list. Reusing a callback URL that
+  the account registered before never returns its secret again (even after the job
+  was deleted), and there is no read-back or rotate endpoint: register a new callback
+  URL (for example a new path) and update the job to rotate. When no secret is
+  returned, `data.data.webhook_secret_note` explains why.
 - `webhook_url: null` or `""` removes the callback; `schedule: null` is rejected.
 
 ## Receiving callbacks
