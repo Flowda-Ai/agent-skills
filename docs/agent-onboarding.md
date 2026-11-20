@@ -41,9 +41,9 @@ Pick the row that matches the client.
 
 | Client | Command |
 | --- | --- |
-| Claude Code (plugin: skills + MCP together) | `claude plugin marketplace add Flowda-Ai/agent-skills` then `claude plugin install flowda@flowda` |
-| Cursor (plugin) | import `https://github.com/Flowda-Ai/agent-skills` in **Customize → Plugins → Add from GitHub Repository**, then set the `FLOWDA_API_KEY` plugin variable |
-| Any Agent Skills client | `npx skills add Flowda-Ai/agent-skills -a <agent>` (e.g. `claude-code`, `cursor`, `codex`, `cline`) |
+| Claude Code (plugin: skills + MCP together) | `claude plugin marketplace add flowda-app/agent-skills` then `claude plugin install flowda@flowda` |
+| Cursor (plugin) | import `https://github.com/flowda-app/agent-skills` in **Customize → Plugins → Add from GitHub Repository**, then set the `FLOWDA_API_KEY` plugin variable |
+| Any Agent Skills client | `npx skills add flowda-app/agent-skills -a <agent>` (e.g. `claude-code`, `cursor`, `codex`, `cline`) |
 | One capability only | append `--skill flowda-search` (or another skill name) to the `npx skills add` command |
 
 The plugin path installs all six skills and registers the MCP server; the

@@ -92,7 +92,7 @@ Facts about the hosted endpoint:
 ## 2. Claude Code — plugin (skills + hosted MCP)
 
 ```bash
-claude plugin marketplace add Flowda-Ai/agent-skills
+claude plugin marketplace add flowda-app/agent-skills
 claude plugin install flowda@flowda
 ```
 
@@ -136,7 +136,7 @@ The repository is a Cursor plugin: `.cursor-plugin/plugin.json` is the manifest 
 `.cursor-plugin/marketplace.json` lets Cursor import the repository as a marketplace.
 
 1. **Customize → Plugins → Add from GitHub Repository**, enter
-   `https://github.com/Flowda-Ai/agent-skills`, then install the `flowda` plugin.
+   `https://github.com/flowda-app/agent-skills`, then install the `flowda` plugin.
 2. Set the plugin variable **`FLOWDA_API_KEY`** in **Customize → Plugins → flowda →
    Configure**. The plugin's `mcp.json` sends it as
    `Authorization: Bearer ${FLOWDA_API_KEY}`.
@@ -202,7 +202,7 @@ Codex.
 ## 6. Skills without the MCP server
 
 ```bash
-npx skills add Flowda-Ai/agent-skills
+npx skills add flowda-app/agent-skills
 ```
 
 This installs the six skill directories into your client's skills location (add

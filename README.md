@@ -28,7 +28,7 @@ the model which tool to use, in what order, what it costs, and what goes wrong.
 3. Install the Claude Code plugin and restart Claude Code:
 
    ```bash
-   claude plugin marketplace add Flowda-Ai/agent-skills
+   claude plugin marketplace add flowda-app/agent-skills
    claude plugin install flowda@flowda
    ```
 
@@ -41,12 +41,12 @@ the model which tool to use, in what order, what it costs, and what goes wrong.
 
 | Client | What you get | How |
 | --- | --- | --- |
-| Claude Code | 6 skills + hosted MCP server | `claude plugin marketplace add Flowda-Ai/agent-skills` then `claude plugin install flowda@flowda` |
+| Claude Code | 6 skills + hosted MCP server | `claude plugin marketplace add flowda-app/agent-skills` then `claude plugin install flowda@flowda` |
 | Cursor (plugin) | 6 skills + hosted MCP server | import this repository in **Customize → Plugins → Add from GitHub Repository**, then set the `FLOWDA_API_KEY` plugin variable |
 | Claude Code (MCP only) | hosted MCP server | `claude mcp add --transport http flowda https://mcp.flowda.ai/mcp --header "Authorization: Bearer flw_..."` |
 | Cursor, Cline, Continue (MCP only) | hosted MCP server | the JSON block below in the client's MCP config |
 | Codex CLI | hosted MCP server | `codex mcp add flowda --url https://mcp.flowda.ai/mcp --bearer-token-env-var FLOWDA_API_KEY` |
-| Any Agent Skills client | 6 skills, no MCP server | `npx skills add Flowda-Ai/agent-skills -a <agent>` |
+| Any Agent Skills client | 6 skills, no MCP server | `npx skills add flowda-app/agent-skills -a <agent>` |
 
 The generic skills install copies or links the skill directories only; the skills
 still need the hosted MCP server to execute tools. See [docs/install.md](docs/install.md)
